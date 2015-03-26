@@ -1,0 +1,3 @@
+cls
+@REM C:\Progra~1\Java\jdk1.6.0_25\bin\java -Xms8m -Xmx12m -XX:+HeapDumpOnOutOfMemoryError -XX:+PrintGCDetails -jar target\heapMemoryTestEngine-2.9.jar -chunk 250000 -sleep 1 -threads 10 -delay 5 -loadthread 100 -noleak
+C:\Progra~1\Java\jdk1.6.0_25\bin\java -Xms8m -Xmx12m -XX:+HeapDumpOnOutOfMemoryError -XX:+PrintGCDetails -jar target\heapMemoryTestEngine-2.9.jar -chunk 250000 -sleep 1 -threads 10 -delay 5 -loadthread 100

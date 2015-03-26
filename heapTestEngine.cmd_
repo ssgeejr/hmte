@@ -1,0 +1,136 @@
+@ECHO OFF
+
+@REM /*************************************************************************
+@REM Copyright (C) 2010  Steve S Gee Jr (ioexcept@yahoo.com)
+@REM  
+@REM https://sourceforge.net/projects/hmte/
+@REM  
+@REM This program is free software: you can redistribute it and/or modify
+@REM it under the terms of the GNU General Public License as published by
+@REM the Free Software Foundation, either version 3 of the License, or
+@REM (at your option) any later version.     
+@REM 	
+@REM This program is distributed in the hope that it will be useful,
+@REM but WITHOUT ANY WARRANTY; without even the implied warranty of
+@REM MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@REM GNU General Public License for more details.     
+@REM 
+@REM You should have received a copy of the GNU General Public License
+@REM along with this program.  If not, see http://www.gnu.org/licenses/
+@REM *************************************************************************/
+
+
+cls
+
+SET JAVA_HOME=
+SET JR28=C:\Progra~1\Java\jrockit-R28.0.1-jre1.6.0_20
+SET JR275=C:\Progra~1\Java\jrockit-R27.5.0-jdk1.5.0_14
+SET JDK1621=C:\Progra~1\Java\jdk1.6.0_21
+SET JDK1620=C:\Progra~1\Java\jdk1.6.0_20
+SET JDK1522=C:\Progra~1\Java\jdk1.5.0_22
+
+SET XMS=8
+SET XMX=10
+SET JVMARGS=
+
+ECHO JVM Heap Tuning Analyzer
+ECHO   Version 1.0
+
+ECHO PARSING ARGUMENTS VALUES: %*
+
+set count=0
+:ITERATE_ARGUMENTS
+if "%1"=="" goto :EXECUTE_TEST
+@REM ECHO ">>%1<<"
+goto CHECK_ARG_VALUE
+
+
+
+
+:CHECK_ARG_VALUE
+@REM	ECHO [[%1]]
+
+if "%1" == "+JR28" (
+	SET JAVA_HOME=%JR28%
+	ECHO %JAVA_HOME%
+)else if  "%1" == "+JDK1621" (
+	SET JAVA_HOME=%JDK1621%
+)else if  "%1" == "+JDK1620" (
+	SET JAVA_HOME=%JDK1620%
+)else if  "%1" == "+JDK1522" (
+	SET JAVA_HOME=%JDK1522%
+)else if  "%1" == "+JR275" (
+	SET JAVA_HOME=%JR275%
+)else if  "%1" == "+XMX" (
+	shift
+	goto SET_XMX_VAL
+)else if  "%1" == "+XMS" (
+	shift
+	goto SET_XMS_VAL
+)else if "%1" == "help" (
+	goto SHOW_HELP
+)else IF NOT "%1" == "" (
+	set JVMARGS=%JVMARGS% %1
+)
+
+shift
+goto :ITERATE_ARGUMENTS
+	
+
+:EXECUTE_TEST
+	IF "%JAVA_HOME%"=="" (
+		GOTO SHOW_HELP
+	 )
+	 
+	ECHO JAVA_HOME INITIALIZED TO %JAVA_HOME%
+	ECHO  XMS: %XMS%
+	ECHO  XMX: %XMX%
+@REM	ECHO List of ARGS %*
+	ECHO JVMARGS: %JVMARGS%
+	  
+	ECHO JVM and Version
+	ECHO __________________________________________________________________________
+	%JAVA_HOME%/bin/java -version
+	ECHO __________________________________________________________________________
+	ECHO ....................................................................................................................................
+	ECHO 	%JAVA_HOME%\bin\java -Xms%XMS%m -Xmx%XMX%m -XX:+PrintGCDetails -Djava.util.logging.config.file=hae.logging.properties -jar heapMemoryTestEngine-2.7.jar %JVMARGS%
+	ECHO ....................................................................................................................................
+	%JAVA_HOME%\bin\java -Xms%XMS%m -Xmx%XMX%m -XX:+PrintGCDetails -Djava.util.logging.config.file=hae.logging.properties -jar heapMemoryTestEngine-2.7.jar %JVMARGS%
+	ECHO ....................................................................................................................................
+	GOTO EOF	
+
+:SHOW_HELP
+		ECHO .........................................
+		ECHO You must select a valid JVM to Continue
+		ECHO Valid JVM Platforms Are:
+		ECHO   +JR28		%JR28%
+		ECHO   +JDK1620	%JDK1620%
+		ECHO   +JDK1621	%JDK1621%
+		ECHO   +JDK1522	%JDK1522%
+		ECHO   +JR275	%JR275%
+		ECHO Valid JVM Options Are:
+		ECHO   +XMS	Minimum Heap Size (default = %XMS%)
+		ECHO   +XMX	Maximum Heap Size (default = %XMX%)
+		ECHO .........................................
+		ECHO EXAMPLE
+		ECHO    heapTestEngine.cmd +JR28 +XMS 8 +XMX 12 -chunk 250000 -sleep 1 -threads 10 -delay 5
+		ECHO .........................................
+
+GOTO EOF
+		
+:SET_XMS_VAL
+	ECHO ">>>XMS %1<<<"
+	SET XMS=%1
+	shift
+	goto :ITERATE_ARGUMENTS
+
+:SET_XMX_VAL
+	SET XMX=%1
+	shift
+	goto :ITERATE_ARGUMENTS
+
+:EOF
+	
+
+
+
